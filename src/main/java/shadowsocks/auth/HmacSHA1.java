@@ -35,10 +35,10 @@ public class HmacSHA1 extends SSAuth{
             SecretKeySpec signingKey = new SecretKeySpec(key, HMAC_SHA1_ALGORITHM);
             Mac mac = Mac.getInstance(HMAC_SHA1_ALGORITHM);
             mac.init(signingKey);
-            byte [] original_result;
+            byte [] originalResult;
             byte [] result = new byte[AUTH_LEN];
-            original_result = mac.doFinal(data);
-            System.arraycopy(original_result, 0, result, 0, AUTH_LEN);
+            originalResult = mac.doFinal(data);
+            System.arraycopy(originalResult, 0, result, 0, AUTH_LEN);
             return result;
         }catch(NoSuchAlgorithmException | InvalidKeyException e){
             throw new AuthException(e);

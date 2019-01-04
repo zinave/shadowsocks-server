@@ -6,7 +6,6 @@ import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,16 +41,13 @@ public class ClientDataHandler extends ChannelInboundHandlerAdapter {
                 });
         try {
             ChannelFuture channelFuture = bootstrap.connect(InetAddress.getByName(host), port);
-            channelFuture.addListener(new ChannelFutureListener() {
-                @Override
-                public void operationComplete(ChannelFuture future) throws Exception {
-                    if (future.isSuccess()) {
-                        logger.info("successfully to connect to {}:{}", host, port);
-                        remoteChannel.set(future.channel());
-                    } else {
-                        logger.info("error to connect to {}:{}", host, port);
-                        clientCtx.close();
-                    }
+            channelFuture.addListener((ChannelFutureListener) future -> {
+                if (future.isSuccess()) {
+                    logger.info("successfully to connect to {}:{}", host, port);
+                    remoteChannel.set(future.channel());
+                } else {
+                    logger.info("error to connect to {}:{}", host, port);
+                    clientCtx.close();
                 }
             });
         } catch (Exception e) {
